@@ -8,6 +8,6 @@ Este é um Conversor de Moedas dinâmico desenvolvido com HTML, CSS (Tailwind CS
 - Entrada de valor formatada automaticamente em moeda (0,00).
 - Suporte para três moedas:
 
-Real Brasileiro (BRL)
-Dólar Americano (USD)
-Euro (EUR)
+Real Brasileiro (BRL) <br>
+Dólar Americano (USD) <br>
+Euro (EUR) 
