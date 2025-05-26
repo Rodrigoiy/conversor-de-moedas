@@ -1,0 +1,11 @@
+{
+  "name": "conversor-moedas",
+  "version": "1.0.0",
+  "description": "Conversor de moedas usando ExchangeRate API",
+  "scripts": {
+    "gerar-env": "node generate-env.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  }
+}

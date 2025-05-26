@@ -1,116 +1,119 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor de Moedas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="env.js" defer>  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conversor de Moedas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    </script>
-    <script>
-        // Função para formatar a entrada com vírgula
-        function formatarMoeda(campo) {
-            let valor = campo.value.replace(/\D/g, ""); // Remove tudo que não for número
-            valor = (parseInt(valor) / 100).toFixed(2).replace(".", ","); // Formata o número
-            campo.value = valor;
-        }
-
-        // Função para realizar a conversão usando a API
-        async function converterMoeda() {
-            const valorInput = document.getElementById('valor');
-            let valor = parseFloat(valorInput.value.replace(",", "."));
-
-            const moedaOrigem = document.getElementById('moedaOrigem').value;
-            const moedaDestino = document.getElementById('moedaDestino').value;
-
-            // Validação do valor
-            if (isNaN(valor) || valor <= 0) {
-                document.getElementById('resultado').innerText = "Por favor, insira um valor válido.";
-                return;
-            }
-
-            // URL da API de câmbio
-            const apiKey = window.env.API_KEY; 
-            const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${moedaOrigem}`;
-
-            try {
-                const resposta = await fetch(url); // Faz a requisição para a API
-                const dados = await resposta.json(); // Recebe os dados em JSON
-
-                if (dados.result === 'error') {
-                    document.getElementById('resultado').innerText = "Erro ao acessar a API.";
-                    return;
-                }
-
-                // taxa de conversão para a moeda de destino
-                const taxaConversao = dados.conversion_rates[moedaDestino];
-                
-                if (taxaConversao) {
-                    const resultado = (valor * taxaConversao).toFixed(2);
-                    document.getElementById('resultado').innerText = 
-                        `Resultado: ${resultado} ${moedaDestino}`;
-                } else {
-                    document.getElementById('resultado').innerText = "Moeda de destino não encontrada.";
-                }
-            } catch (erro) {
-                document.getElementById('resultado').innerText = "Erro na requisição da API.";
-                console.error(erro);
-            }
-        }
-    </script>
+  <!-- Carrega o env.js primeiro, sem defer -->
+  <script src="env.js"></script>
 </head>
-
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen pt-4">
-    <!-- Cabeçalho PORT Rodrigo -->
-    <div class="leading-tight text-center mb-6">
-        <span class="block text-xs font-normal text-white">PORTIFÓLIO</span>
-        <span class="text-lime-400 text-3xl font-extrabold -mt-2">Rodrigo</span>
+  <!-- Cabeçalho PORT Rodrigo -->
+  <div class="leading-tight text-center mb-6">
+    <span class="block text-xs font-normal text-white">PORTIFÓLIO</span>
+    <span class="text-lime-400 text-3xl font-extrabold -mt-2">Rodrigo</span>
+  </div>
+
+  <div class="bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
+    <h1 class="text-2xl font-bold text-center mb-6">Conversor de Moedas</h1>
+    <form id="conversor-form" class="space-y-4">
+      <!-- Input de valor -->
+      <div class="mb-4">
+        <label for="valor" class="block text-lg mb-2">Digite o valor</label>
+        <input
+          type="text"
+          id="valor"
+          placeholder="0,00"
+          class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-md text-white"
+          oninput="formatarMoeda(this)"
+          value="0,00"
+          aria-label="Valor"
+        />
       </div>
 
-    <div class="bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h1 class="text-2xl font-bold text-center mb-6">Conversor de Moedas</h1>
-        <form id="conversor-form" class="space-y-4">
-            <!-- Input em number para o valor -->
-            <div class="mb-4">
-                <label for="valor" class="block text-lg mb-2">Digite o valor</label>
-                <input
-                  type="text"
-                  id="valor"
-                  placeholder="0,00"
-                  class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-md text-white"
-                  oninput="formatarMoeda(this)"
-                  value="0,00"
-                  aria-label="Valor"
-                />
-            </div>
+      <!-- Moeda de origem -->
+      <div class="mb-4">
+        <label for="moedaOrigem" class="block mb-2">De:</label>
+        <select id="moedaOrigem" class="w-full p-2 rounded bg-gray-700 text-white" aria-label="Moeda de origem">
+          <option value="BRL">Real Brasileiro (BRL)</option>
+          <option value="USD">Dólar Americano (USD)</option>
+          <option value="EUR">Euro (EUR)</option>
+        </select>
+      </div>
 
-            <!-- Div para moedaOrigem -->
-            <div class="mb-4">
-                <label for="moedaOrigem" class="block mb-2">De:</label>
-                <select id="moedaOrigem" class="w-full p-2 rounded bg-gray-700 text-white" aria-label="Moeda de origem">
-                    <option value="BRL">Real Brasileiro (BRL)</option>
-                    <option value="USD">Dólar Americano (USD)</option>
-                    <option value="EUR">Euro (EUR)</option>
-                </select>
-            </div>
+      <!-- Moeda de destino -->
+      <div class="mb-4">
+        <label for="moedaDestino" class="block mb-2">Para:</label>
+        <select id="moedaDestino" class="w-full p-2 rounded bg-gray-700 text-white" aria-label="Moeda de destino">
+          <option value="BRL">Real Brasileiro (BRL)</option>
+          <option value="USD">Dólar Americano (USD)</option>
+          <option value="EUR">Euro (EUR)</option>
+        </select>
+      </div>
 
-            <!-- Div para moedaDestino-->
-            <div class="mb-4">
-                <label for="moedaDestino" class="block mb-2">Para:</label>
-                <select id="moedaDestino" class="w-full p-2 rounded bg-gray-700 text-white" aria-label="Moeda de destino">
-                    <option value="BRL">Real Brasileiro (BRL)</option>
-                    <option value="USD">Dólar Americano (USD)</option>
-                    <option value="EUR">Euro (EUR)</option>
-                </select>
-            </div>
+      <!-- Botão -->
+      <button
+        id="converter"
+        type="button"
+        class="w-full bg-lime-400 text-black py-2 rounded font-semibold mt-4"
+        onclick="converterMoeda()"
+      >
+        Converter
+      </button>
 
-            <!-- Botão de Conversão -->
-            <button id="converter" type="button" class="w-full bg-lime-400 text-black py-2 rounded font-semibold mt-4" onclick="converterMoeda()">Converter</button>
+      <!-- Resultado -->
+      <div id="resultado" class="mt-4 text-center"></div>
+    </form>
+  </div>
 
-            <!-- Div para resultado -->
-            <div id="resultado" class="mt-4 text-center"></div>
-        </form>
-    </div>
+  <!-- Scripts ao final do body -->
+  <script>
+    // Formata moeda
+    function formatarMoeda(campo) {
+      let valor = campo.value.replace(/\D/g, "");
+      valor = (parseInt(valor) / 100).toFixed(2).replace(".", ",");
+      campo.value = valor;
+    }
+
+    // Conversão de moeda
+    async function converterMoeda() {
+      const valorInput = document.getElementById('valor');
+      let valor = parseFloat(valorInput.value.replace(",", "."));
+      const moedaOrigem = document.getElementById('moedaOrigem').value;
+      const moedaDestino = document.getElementById('moedaDestino').value;
+
+      if (isNaN(valor) || valor <= 0) {
+        document.getElementById('resultado').innerText = "Por favor, insira um valor válido.";
+        return;
+      }
+
+      const apiKey = window.env.API_KEY;
+      const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${moedaOrigem}`;
+
+      try {
+        const resposta = await fetch(url);
+        const dados = await resposta.json();
+
+        if (dados.result === 'error') {
+          document.getElementById('resultado').innerText = "Erro ao acessar a API.";
+          return;
+        }
+
+        const taxaConversao = dados.conversion_rates[moedaDestino];
+
+        if (taxaConversao) {
+          const resultado = (valor * taxaConversao).toFixed(2);
+          document.getElementById('resultado').innerText = `Resultado: ${resultado} ${moedaDestino}`;
+        } else {
+          document.getElementById('resultado').innerText = "Moeda de destino não encontrada.";
+        }
+      } catch (erro) {
+        document.getElementById('resultado').innerText = "Erro na requisição da API.";
+        console.error(erro);
+      }
+    }
+  </script>
 </body>
 </html>
